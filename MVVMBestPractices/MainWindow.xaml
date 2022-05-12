@@ -1,0 +1,132 @@
+﻿<Window x:Class="MVVMBestPractices.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVMBestPractices"
+        xmlns:ViewModels="clr-namespace:MVVMBestPractices.Logic.ViewModels;assembly=MVVMBestPractices.Logic"
+        
+        mc:Ignorable="d"
+        Title="MVVM Best Practices" Height="700" Width="1000">
+
+    <DockPanel LastChildFill="True">
+        <Grid Margin="10" DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" Margin="5" DockPanel.Dock="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Menu Grid.Row="0">
+                    <MenuItem Header="Activities" x:Name="Activities" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Center" Click='Activities_Click'/>
+                    <MenuItem Header="Equipment" x:Name="Equipment" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Center" Click='Equipment_Click'/>
+                </Menu>
+            </Grid>
+
+            <Grid Grid.Column="1" Grid.Row="0" DataContext="{Binding ActivityVM}">
+                <GroupBox x:Name="grpBox_Activities"  Header="Activities" Visibility="{Binding Path=IsVisible, Mode=OneWay, Converter={StaticResource BoolToVis}}" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" MaxHeight="50"/>
+                            <RowDefinition />
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="80" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+
+                                <TextBox Grid.Column="0" Grid.Row="0" Text="{Binding SearchText}" VerticalAlignment="Center" Height="30"/>
+                                <Button Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="5" Content="Search" Width="70" Command="{Binding SearchCommand}" />
+                                <Button Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" Margin="5" Content="Refresh Grid" Width="80" Command="{Binding RefreshGridCommand}" />
+                                <Button Grid.Column="3" Grid.Row="0" HorizontalAlignment="Right" Margin="5" Content="Create" Width="70" Command="{Binding CreateCommand}" />
+                            </Grid>
+                        </Grid>
+
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Activities, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" EnableRowVirtualization="True" AutoGenerateColumns="False" Margin="5">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Id" Binding="{Binding Id, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="40"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"/>
+                                <DataGridTextColumn Header="Created On" Binding="{Binding CreatedOn, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"/>
+                                <DataGridTextColumn Header="Created By" Binding="{Binding CreatedBy, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"/>
+                                <DataGridTextColumn Header="Last Modified On" Binding="{Binding LastModifiedOn, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Grid Grid.Row="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Button Grid.Column="0" HorizontalAlignment="Left" Margin="5" Content="Previous" Width="70" Command="{Binding PreviousCommand}" IsEnabled="{Binding PreviousCommandIsEnabled, Mode=TwoWay}"/>
+                            <Label Grid.Column="1" Content="{Binding PaginationText}" Width="100" Height="30"/>
+                            <Button Grid.Column="2" HorizontalAlignment="Right" Margin="5" Content="Next" Width="70" Command="{Binding NextCommand}" IsEnabled="{Binding NextCommandIsEnabled, Mode=TwoWay}"/>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <Grid Grid.Column="1" Grid.Row="0" DataContext="{Binding EquipmentVM}">
+                <GroupBox x:Name="grpBox_Equipments" Header="Equipments"  Visibility="{Binding Path=IsVisible, Mode=OneWay, Converter={StaticResource BoolToVis}}" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" MaxHeight="50"/>
+                            <RowDefinition />
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35" />
+                                </Grid.RowDefinitions>
+
+                                <TextBox Grid.Column="0" Grid.Row="0" Text="Search by name" VerticalAlignment="Center" IsEnabled="False" Height="30"/>
+                                <Button Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="5" Content="Search" Width="70" Command="{Binding SearchCommand}" />
+                                <Button Grid.Column="2" Grid.Row="0" HorizontalAlignment="Right" Margin="5" Content="Create" Width="70" Command="{Binding CreateCommand}" />
+                            </Grid>
+                        </Grid>
+
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Equipments, Mode=TwoWay}" IsSynchronizedWithCurrentItem="True" EnableRowVirtualization="True" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Id" Binding="{Binding Id, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="40"/>
+                                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="70"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="70"/>
+                                <DataGridTextColumn Header="Created On" Binding="{Binding CreatedOn, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="70"/>
+                                <DataGridTextColumn Header="Created By" Binding="{Binding CreatedBy, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="70"/>
+                                <DataGridTextColumn Header="Last Modified On" Binding="{Binding LastModifiedOn, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" MinWidth="70"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Grid Grid.Row="2" Visibility="Hidden">
+                            <Button HorizontalAlignment="Left" Margin="5" Content="Previous" Width="70" />
+                            <Label Content="total"/>
+                            <Button HorizontalAlignment="Right" Margin="5" Content="Next" Width="70" />
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+            
+        </Grid>
+    </DockPanel>
+</Window>
